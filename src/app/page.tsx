@@ -12,15 +12,17 @@ export default function Home() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [defaultWeathers, setDefaultWeathers] = useState<(WeatherData | null)[]>([null, null, null, null]);
 
+  const apikey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
+
   useEffect(() => {
     Promise.all(
       DEFAULT_CITIES.map(city =>
-        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=c44d65264eded4fe47d6ec14f5fccc61&units=metric&lang=th`)
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apikey}&units=metric&lang=th`)
           .then(res => res.ok ? res.json() : null)
           .catch(() => null)
       )
     ).then(setDefaultWeathers)
-  }, [])
+  }, [apikey])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,7 +33,7 @@ export default function Home() {
       return;
     }
     try {
-      const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=c44d65264eded4fe47d6ec14f5fccc61&units=metric&lang=th`);
+      const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apikey}&units=metric&lang=th`);
       if(!res.ok){
         setError("Network response was not ok");
         return;
